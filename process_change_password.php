@@ -1,35 +1,38 @@
 <?php
 require "db.php";
+require "functions.php";
 session_start();
 
-if (!isset($_SESSION['user_id'])) {
-  exit;
+// Protect page
+requireAuth();
+
+// Validate CSRF
+if (!validateCSRF()) {
+    die("Invalid request");
 }
 
-if ($_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-  die("Invalid request");
+// Get input
+$current = post('current_password');
+$new = post('new_password');
+
+// Validate password length
+if (strlen($new) < 8) {
+    redirectWithError('account.php', 'password_short');
 }
 
-$current = $_POST['current_password'] ?? '';
-$new = $_POST['new_password'] ?? '';
-
-$stmt = $pdo->prepare(
-  "SELECT password FROM users WHERE id = ?"
-);
+// Verify current password
+$stmt = $pdo->prepare("SELECT password FROM users WHERE id = ?");
 $stmt->execute([$_SESSION['user_id']]);
 $user = $stmt->fetch();
 
 if (!$user || !password_verify($current, $user['password'])) {
-  header("Location: account.php?error=password");
-  exit;
+    redirectWithError('account.php', 'password');
 }
 
+// Update password
 $newHash = password_hash($new, PASSWORD_DEFAULT);
-
-$stmt = $pdo->prepare(
-  "UPDATE users SET password = ? WHERE id = ?"
-);
+$stmt = $pdo->prepare("UPDATE users SET password = ? WHERE id = ?");
 $stmt->execute([$newHash, $_SESSION['user_id']]);
 
-header("Location: account.php?success=password");
-exit;
+// Success
+redirectWithSuccess('account.php', 'password');

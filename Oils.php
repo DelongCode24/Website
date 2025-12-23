@@ -1,18 +1,13 @@
-<?php session_start(); ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-    <link rel="stylesheet" href="styles.css"/>
-</head>
-<body>
-<?php require "header.php"; ?>
+<?php 
+$pageTitle = "Essential Oils";
+require "header.php"; 
+?>
+
 <main>
-    <h1>Wax Products</h1>
-    <p>Wax content</p>
+  <h1>Essential Oils</h1>
+  <p>Explore our collection of essential oils.</p>
+  <!-- TODO: Add product grid here -->
 </main>
-<script src="script.js" defer></script> 
+
 </body>
 </html>

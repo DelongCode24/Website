@@ -1,8 +1,9 @@
 <?php
 require "db.php";
+require "functions.php";
 session_start();
 
-$token = $_GET['token'] ?? '';
+$token = get('token');
 $tokenHash = hash('sha256', $token);
 
 $stmt = $pdo->prepare("
@@ -17,13 +18,15 @@ $reset = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!$reset) {
   die("Invalid or expired reset link.");
 }
-?>
 
+$pageTitle = "Reset Password";
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Reset Password</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><?= e($pageTitle) ?> - <?= SITE_NAME ?></title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -33,11 +36,12 @@ if (!$reset) {
     <h1>Reset Password</h1>
 
     <form method="POST" action="process_reset_password.php" class="auth-form">
-      <input type="hidden" name="token" value="<?= htmlspecialchars($token) ?>">
+      <input type="hidden" name="token" value="<?= e($token) ?>">
 
       <div class="form-group">
         <label>New Password</label>
-        <input type="password" name="password" required>
+        <input type="password" name="password" required minlength="8">
+        <small>Must be at least 8 characters</small>
       </div>
 
       <div class="form-group">

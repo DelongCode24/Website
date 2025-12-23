@@ -1,8 +1,13 @@
-<?php require "header.php"; ?>
+<?php 
+$pageTitle = "Wax Melts";
+require "header.php"; 
+?>
+
 <main>
-    <h1>Wax Products</h1>
-    <p>Wax content</p>
+  <h1>Wax Melts</h1>
+  <p>Discover our premium wax melts.</p>
+  <!-- TODO: Add product grid here -->
 </main>
-<script src="script.js" defer></script> 
+
 </body>
 </html>

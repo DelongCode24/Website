@@ -1,13 +1,18 @@
 <?php
 require "db.php";
+require "functions.php";
 session_start();
 
-$token = $_POST['token'] ?? '';
-$password = $_POST['password'] ?? '';
-$confirm  = $_POST['confirm'] ?? '';
+$token = post('token');
+$password = post('password');
+$confirm = post('confirm');
 
 if ($password !== $confirm) {
   die("Passwords do not match.");
+}
+
+if (strlen($password) < 8) {
+    die("Password must be at least 8 characters.");
 }
 
 $tokenHash = hash('sha256', $token);
@@ -27,16 +32,11 @@ if (!$reset) {
 
 $newHash = password_hash($password, PASSWORD_DEFAULT);
 
-$stmt = $pdo->prepare("
-  UPDATE users SET password = ? WHERE id = ?
-");
+$stmt = $pdo->prepare("UPDATE users SET password = ? WHERE id = ?");
 $stmt->execute([$newHash, $reset['user_id']]);
 
 // Remove used reset tokens
-$stmt = $pdo->prepare("
-  DELETE FROM password_resets WHERE user_id = ?
-");
+$stmt = $pdo->prepare("DELETE FROM password_resets WHERE user_id = ?");
 $stmt->execute([$reset['user_id']]);
 
-header("Location: login.php?reset=success");
-exit;
+redirectWithSuccess('login.php', 'reset');

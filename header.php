@@ -12,13 +12,19 @@ session_start();
 if (empty($_SESSION['csrf_token'])) {
   $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
+
+// Load config and functions
+require_once "config.php";
+require_once "functions.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rok World</title>
+  <meta name="description" content="<?= SITE_DESCRIPTION ?>">
+  <title><?= isset($pageTitle) ? e($pageTitle) . ' - ' . SITE_NAME : SITE_NAME ?></title>
+  <link rel="icon" href="favicon.ico">
   <link rel="stylesheet" href="styles.css">
   <script src="script.js" defer></script>
 </head>
@@ -39,10 +45,16 @@ if (empty($_SESSION['csrf_token'])) {
     </nav>
   </div>
 
-  <div class="site-name">Rok World LLC</div>
+  <div class="site-name"><?= SITE_NAME ?></div>
 
   <div class="header-right">
-    <a href="login.php" class="login-link">Login</a>
+    <?php if (isLoggedIn()): ?>
+      <a href="account.php" class="login-link">Account</a>
+      <span class="header-divider">|</span>
+      <a href="logout.php" class="login-link">Logout</a>
+    <?php else: ?>
+      <a href="login.php" class="login-link">Login</a>
+    <?php endif; ?>
   </div>
 </header>
 

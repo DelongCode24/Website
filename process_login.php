@@ -1,5 +1,6 @@
 <?php
 require "db.php";
+require "functions.php";
 session_start();
 
 $ipAddress = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
@@ -7,19 +8,15 @@ $ipAddress = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
 /* =======================
    CSRF VALIDATION
 ======================= */
-if (
-    !isset($_POST['csrf_token']) ||
-    $_POST['csrf_token'] !== ($_SESSION['csrf_token'] ?? '')
-) {
-    header("Location: login.php?error=csrf");
-    exit;
+if (!validateCSRF()) {
+    redirectWithError('login.php', 'csrf');
 }
 
 /* =======================
    INPUT
 ======================= */
-$username = trim($_POST['username'] ?? '');
-$password = $_POST['password'] ?? '';
+$username = post('username');
+$password = post('password');
 
 /* =======================
    HELPER FUNCTIONS
@@ -91,9 +88,10 @@ function sendPasswordReset(PDO $pdo, array $user): void {
     ");
     $stmt->execute([$user['id'], $tokenHash, $expires]);
 
-    $resetLink = "https://yourdomain.com/reset_password.php?token=$token";
+    $resetLink = SITE_URL . "/reset_password.php?token=$token";
 
-    // TEMP mail (replace with SMTP later)
+    // TODO: Replace with proper SMTP (PHPMailer or similar) in production
+    // The mail() function doesn't work on localhost XAMPP
     mail(
         $user['email'],
         "Reset your Rok World password",
@@ -124,12 +122,10 @@ if (!$user || !password_verify($password, $hash)) {
 
     if ($attempts >= 5 && $user && !empty($user['email'])) {
         sendPasswordReset($pdo, $user);
-        header("Location: login.php?error=suspicious");
+        redirectWithError('login.php', 'suspicious');
     } else {
-        header("Location: login.php?error=1");
+        redirectWithError('login.php', 'invalid_credentials');
     }
-
-    exit;
 }
 
 /* =======================
@@ -140,5 +136,4 @@ clearLoginAttempts($pdo, $username, $ipAddress);
 session_regenerate_id(true);
 $_SESSION['user_id'] = $user['id'];
 
-header("Location: index.php");
-exit;
+redirect('index.php');
