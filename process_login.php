@@ -1,6 +1,6 @@
 <?php
-require "db.php";
-require "functions.php";
+require 'db.php';
+require 'functions.php';
 session_start();
 
 $ipAddress = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
@@ -22,15 +22,18 @@ $password = post('password');
    HELPER FUNCTIONS
 ======================= */
 
-function generateToken(): string {
+function generateToken(): string
+{
     return bin2hex(random_bytes(32));
 }
 
-function hashToken(string $token): string {
+function hashToken(string $token): string
+{
     return hash('sha256', $token);
 }
 
-function recordLoginAttempt(PDO $pdo, string $username, string $ip): void {
+function recordLoginAttempt(PDO $pdo, string $username, string $ip): void
+{
     $stmt = $pdo->prepare("
         INSERT INTO login_attempts (username, ip_address, attempts)
         VALUES (:username, :ip, 1)
@@ -41,11 +44,12 @@ function recordLoginAttempt(PDO $pdo, string $username, string $ip): void {
 
     $stmt->execute([
         'username' => $username,
-        'ip'       => $ip
+        'ip' => $ip,
     ]);
 }
 
-function getLoginAttempts(PDO $pdo, string $username, string $ip): int {
+function getLoginAttempts(PDO $pdo, string $username, string $ip): int
+{
     $stmt = $pdo->prepare("
         SELECT attempts
         FROM login_attempts
@@ -56,7 +60,8 @@ function getLoginAttempts(PDO $pdo, string $username, string $ip): int {
     return (int) ($stmt->fetchColumn() ?? 0);
 }
 
-function clearLoginAttempts(PDO $pdo, string $username, string $ip): void {
+function clearLoginAttempts(PDO $pdo, string $username, string $ip): void
+{
     $stmt = $pdo->prepare("
         DELETE FROM login_attempts
         WHERE username = ? AND ip_address = ?
@@ -64,7 +69,8 @@ function clearLoginAttempts(PDO $pdo, string $username, string $ip): void {
     $stmt->execute([$username, $ip]);
 }
 
-function sendPasswordReset(PDO $pdo, array $user): void {
+function sendPasswordReset(PDO $pdo, array $user): void
+{
     // Prevent multiple reset emails within 30 minutes
     $stmt = $pdo->prepare("
         SELECT 1 FROM password_resets
@@ -94,8 +100,8 @@ function sendPasswordReset(PDO $pdo, array $user): void {
     // The mail() function doesn't work on localhost XAMPP
     mail(
         $user['email'],
-        "Reset your Rok World password",
-        "We detected suspicious login attempts.\n\nReset your password:\n$resetLink"
+        'Reset your Rok World password',
+        "We detected suspicious login attempts.\n\nReset your password:\n$resetLink",
     );
 }
 
@@ -116,7 +122,6 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 $hash = $user ? $user['password'] : '$2y$10$invalidinvalidinvalidinvalidinv';
 
 if (!$user || !password_verify($password, $hash)) {
-
     recordLoginAttempt($pdo, $username, $ipAddress);
     $attempts = getLoginAttempts($pdo, $username, $ipAddress);
 

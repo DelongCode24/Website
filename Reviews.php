@@ -1,6 +1,6 @@
-<?php 
-$pageTitle = "Customer Reviews";
-require "header.php"; 
+<?php
+$pageTitle = 'Customer Reviews';
+require 'header.php';
 ?>
 
 <main>

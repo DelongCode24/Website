@@ -1,11 +1,11 @@
 <?php
-require "db.php";
-require "functions.php";
+require 'db.php';
+require 'functions.php';
 session_start();
 
 // Validate CSRF
 if (!validateCSRF()) {
-    die("Invalid request");
+    die('Invalid request');
 }
 
 // Get sanitized input
@@ -27,9 +27,7 @@ if (strlen($password) < 8) {
 $hash = password_hash($password, PASSWORD_DEFAULT);
 
 // Insert user
-$stmt = $pdo->prepare(
-    "INSERT INTO users (username, email, password) VALUES (?, ?, ?)"
-);
+$stmt = $pdo->prepare('INSERT INTO users (username, email, password) VALUES (?, ?, ?)');
 
 try {
     $stmt->execute([$username, $email, $hash]);

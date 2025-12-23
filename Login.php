@@ -1,6 +1,6 @@
-<?php 
-$pageTitle = "Login";
-require "header.php"; 
+<?php
+$pageTitle = 'Login';
+require 'header.php';
 ?>
 
 <div class="auth-page">

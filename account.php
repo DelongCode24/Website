@@ -1,14 +1,14 @@
 <?php
-$pageTitle = "My Account";
+$pageTitle = 'My Account';
 $breadcrumbs = ['Account' => null];
-require "header.php";
-require "db.php";
+require 'header.php';
+require 'db.php';
 
 // Protect page
 requireAuth('login.php');
 
 // Fetch user data
-$stmt = $pdo->prepare("SELECT username, email, created_at FROM users WHERE id = ?");
+$stmt = $pdo->prepare('SELECT username, email, created_at FROM users WHERE id = ?');
 $stmt->execute([$_SESSION['user_id']]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -46,7 +46,7 @@ if (!$user) {
     <h2>Account Overview</h2>
     <p><strong>Username:</strong> <?= e($user['username']) ?></p>
     <p><strong>Email:</strong> <?= e($user['email']) ?></p>
-    <p><strong>Member since:</strong> <?= date("F Y", strtotime($user['created_at'])) ?></p>
+    <p><strong>Member since:</strong> <?= date('F Y', strtotime($user['created_at'])) ?></p>
   </section>
 
   <!-- EDIT ACCOUNT INFO -->
@@ -95,4 +95,4 @@ if (!$user) {
 
 </main>
 
-<?php require "footer.php"; ?>
+<?php require 'footer.php'; ?>

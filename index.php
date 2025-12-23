@@ -1,7 +1,7 @@
-<?php 
-$pageTitle = "Home";
-require "functions.php";
-require "header.php"; 
+<?php
+$pageTitle = 'Home';
+require 'functions.php';
+require 'header.php';
 ?>
 
 <main class="hero">

@@ -1,6 +1,6 @@
 <?php
-require "db.php";
-require "functions.php";
+require 'db.php';
+require 'functions.php';
 session_start();
 
 // Protect page
@@ -8,7 +8,7 @@ requireAuth();
 
 // Validate CSRF
 if (!validateCSRF()) {
-    die("Invalid request");
+    die('Invalid request');
 }
 
 // Get input
@@ -21,7 +21,7 @@ if (strlen($new) < 8) {
 }
 
 // Verify current password
-$stmt = $pdo->prepare("SELECT password FROM users WHERE id = ?");
+$stmt = $pdo->prepare('SELECT password FROM users WHERE id = ?');
 $stmt->execute([$_SESSION['user_id']]);
 $user = $stmt->fetch();
 
@@ -31,7 +31,7 @@ if (!$user || !password_verify($current, $user['password'])) {
 
 // Update password
 $newHash = password_hash($new, PASSWORD_DEFAULT);
-$stmt = $pdo->prepare("UPDATE users SET password = ? WHERE id = ?");
+$stmt = $pdo->prepare('UPDATE users SET password = ? WHERE id = ?');
 $stmt->execute([$newHash, $_SESSION['user_id']]);
 
 // Success

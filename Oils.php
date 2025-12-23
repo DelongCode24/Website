@@ -1,6 +1,6 @@
-<?php 
-$pageTitle = "Essential Oils";
-require "header.php"; 
+<?php
+$pageTitle = 'Essential Oils';
+require 'header.php';
 ?>
 
 <main>

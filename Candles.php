@@ -1,6 +1,6 @@
-<?php 
-$pageTitle = "Candles";
-require "header.php"; 
+<?php
+$pageTitle = 'Candles';
+require 'header.php';
 ?>
 
 <main>

@@ -1,6 +1,6 @@
-<?php 
-$pageTitle = "Contact Us";
-require "header.php"; 
+<?php
+$pageTitle = 'Contact Us';
+require 'header.php';
 ?>
 
 <main>

@@ -1,6 +1,6 @@
 <?php
-require "db.php";
-require "functions.php";
+require 'db.php';
+require 'functions.php';
 session_start();
 
 $token = get('token');
@@ -16,10 +16,10 @@ $stmt->execute([$tokenHash]);
 $reset = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$reset) {
-  die("Invalid or expired reset link.");
+    die('Invalid or expired reset link.');
 }
 
-$pageTitle = "Reset Password";
+$pageTitle = 'Reset Password';
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -1,6 +1,6 @@
-<?php 
-$pageTitle = "Wax Melts";
-require "header.php"; 
+<?php
+$pageTitle = 'Wax Melts';
+require 'header.php';
 ?>
 
 <main>
