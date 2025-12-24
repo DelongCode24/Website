@@ -139,6 +139,9 @@ if (!$user || !password_verify($password, $hash)) {
 clearLoginAttempts($pdo, $username, $ipAddress);
 
 session_regenerate_id(true);
+
 $_SESSION['user_id'] = $user['id'];
+$_SESSION['is_admin'] = (bool) $user['is_admin']; // ✅ REQUIRED
 
 redirect('index.php');
+exit();

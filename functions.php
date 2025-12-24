@@ -118,12 +118,12 @@ function isAdmin()
         return false;
     }
 
-    global $pdo;
-    $stmt = $pdo->prepare('SELECT is_admin FROM users WHERE id = ?');
-    $stmt->execute([$_SESSION['user_id']]);
-    $user = $stmt->fetch();
+    // Prevent header from crashing site
+    if (!isset($_SESSION['is_admin'])) {
+        return false;
+    }
 
-    return $user && $user['is_admin'];
+    return $_SESSION['is_admin'] === true;
 }
 
 /**
