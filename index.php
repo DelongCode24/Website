@@ -1,6 +1,5 @@
 <?php
 $pageTitle = 'Home';
-require 'functions.php';
 require 'header.php';
 ?>
 
@@ -13,5 +12,4 @@ require 'header.php';
     </div>
 </main>
 
-</body>
-</html>
+<?php require 'footer.php'; ?>

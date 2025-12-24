@@ -48,14 +48,19 @@ require_once 'functions.php';
   <div class="site-name"><?= SITE_NAME ?></div>
 
   <div class="header-right">
-    <?php if (isLoggedIn()): ?>
-      <a href="account.php" class="login-link">Account</a>
+  <?php if (isLoggedIn()): ?>
+    <?php if (isAdmin()): ?>
+      <a href="admin.php" class="login-link">Admin</a>
       <span class="header-divider">|</span>
-      <a href="logout.php" class="login-link">Logout</a>
-    <?php else: ?>
-      <a href="login.php" class="login-link">Login</a>
     <?php endif; ?>
-  </div>
+    <a href="account.php" class="login-link">Account</a>
+    <span class="header-divider">|</span>
+    <a href="logout.php" class="login-link">Logout</a>
+  <?php else: ?>
+    <a href="login.php" class="login-link">Login</a>
+  <?php endif; ?>
+</div>
+
 </header>
 
 <hr>

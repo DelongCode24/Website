@@ -2,3 +2,6 @@ node_modules/
 .env
 .DS_Store
 db.php
+uploads/
+create_admin.php
+check_requirements.php

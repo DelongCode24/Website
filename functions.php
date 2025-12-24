@@ -106,3 +106,93 @@ function get($key, $default = '')
 {
     return trim($_GET[$key] ?? $default);
 }
+
+/**
+ * Check if user is admin
+ *
+ * @return bool - True if user is admin
+ */
+function isAdmin()
+{
+    if (!isLoggedIn()) {
+        return false;
+    }
+
+    global $pdo;
+    $stmt = $pdo->prepare('SELECT is_admin FROM users WHERE id = ?');
+    $stmt->execute([$_SESSION['user_id']]);
+    $user = $stmt->fetch();
+
+    return $user && $user['is_admin'];
+}
+
+/**
+ * Require admin authentication
+ *
+ * @param string $redirectTo - Where to redirect if not admin
+ */
+function requireAdmin($redirectTo = 'index.php')
+{
+    if (!isAdmin()) {
+        redirectWithError($redirectTo, 'unauthorized');
+    }
+}
+
+/**
+ * Handle file upload for product images
+ *
+ * @param array $file - $_FILES['image']
+ * @return string|false - Path to uploaded file or false on failure
+ */
+function uploadProductImage($file)
+{
+    // Validate file
+    if (!isset($file['tmp_name']) || !is_uploaded_file($file['tmp_name'])) {
+        return false;
+    }
+
+    // Check file type
+    $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    $fileType = mime_content_type($file['tmp_name']);
+
+    if (!in_array($fileType, $allowedTypes)) {
+        return false;
+    }
+
+    // Check file size (max 5MB)
+    if ($file['size'] > 5 * 1024 * 1024) {
+        return false;
+    }
+
+    // Create uploads directory if it doesn't exist
+    $uploadDir = 'uploads/products/';
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0755, true);
+    }
+
+    // Generate unique filename
+    $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+    $filename = uniqid('product_') . '.' . $extension;
+    $filepath = $uploadDir . $filename;
+
+    // Move uploaded file
+    if (move_uploaded_file($file['tmp_name'], $filepath)) {
+        return $filepath;
+    }
+
+    return false;
+}
+
+/**
+ * Delete product image file
+ *
+ * @param string $filepath - Path to image file
+ * @return bool - True if deleted successfully
+ */
+function deleteProductImage($filepath)
+{
+    if (file_exists($filepath)) {
+        return unlink($filepath);
+    }
+    return true; // Already deleted
+}
